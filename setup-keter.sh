@@ -1,18 +1,18 @@
 #!/bin/bash
 set -o errexit -o nounset -o xtrace
 
-# # Quick start:
-# # wget -O - https://raw.github.com/snoyberg/keter/master/setup-keter.sh | bash -ex
+# Quick start:
+# wget -O - https://raw.github.com/snoyberg/keter/master/setup-keter.sh | bash -ex
 # 
-# sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 575159689BEFB442
-# echo "deb http://download.fpcomplete.com/debian `lsb_release -sc` main"|sudo tee /etc/apt/sources.list.d/fpco.list
-# 
-# sudo apt-get update
-# sudo apt-get -y install postgresql stack zlib1g-dev
-# 
-# stack update
-# stack setup
-# stack install keter
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 575159689BEFB442
+echo "deb http://download.fpcomplete.com/debian `lsb_release -sc` main"|sudo tee /etc/apt/sources.list.d/fpco.list
+
+sudo apt-get update
+sudo apt-get -y install postgresql stack zlib1g-dev
+
+stack update
+stack setup
+stack install keter
 
 sudo mkdir -p /opt/keter/bin
 sudo cp ~/.local/bin/keter /opt/keter/bin
@@ -44,21 +44,24 @@ listeners:
 
 # ip-from-header: true
 EOF
+
 sudo chown root:root /tmp/keter-config.yaml
 sudo mv /tmp/keter-config.yaml /opt/keter/etc
 
-cat > /tmp/keter.conf <<EOF
-# /etc/init/keter.conf
-start on (net-device-up and local-filesystems and runlevel [2345])
-stop on runlevel [016]
-respawn
+cat > /tmp/keter.service <<EOF
+[Unit]
+Description=Web Application Manager
+After=syslog.target
 
-console none
+[Service]
+ExecStart=/opt/keter/bin/keter /opt/keter/etc/keter-config.yaml
 
-exec /opt/keter/bin/keter /opt/keter/etc/keter-config.yaml
+[Install]
+WantedBy=multi-user.target
 EOF
-sudo chown root:root /tmp/keter.conf
-sudo mv /tmp/keter.conf /etc/init
+
+sudo chown root:root /tmp/keter.service
+sudo mv /tmp/keter.conf /etc/systemd/system
 
 sudo start keter
 
