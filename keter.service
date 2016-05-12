@@ -1,0 +1,9 @@
+[Unit]
+Description=Web Application Manager
+After=syslog.target
+
+[Service]
+ExecStart=/opt/keter/bin/keter /opt/keter/etc/keter-config.yaml
+
+[Install]
+WantedBy=multi-user.target
