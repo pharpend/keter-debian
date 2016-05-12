@@ -2,8 +2,8 @@
 set -o errexit -o nounset -o xtrace
 
 # Quick start:
-# wget -O - https://raw.github.com/snoyberg/keter/master/setup-keter.sh | bash -ex
-# 
+# wget -O - https://raw.github.com/pharpend/keter-debian/master/setup-keter.sh | bash -ex
+
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 575159689BEFB442
 echo "deb http://download.fpcomplete.com/debian `lsb_release -sc` main"|sudo tee /etc/apt/sources.list.d/fpco.list
 
